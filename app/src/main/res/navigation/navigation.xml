@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation"
+    app:startDestination="@id/homeFragment">
+
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.martinprice20.passwordmakermvi.home.HomeFragment"
+        android:label="fragment_home"
+        tools:layout="@layout/fragment_home" >
+        <action
+            android:id="@+id/action_homeFragment_to_numberFragment"
+            app:destination="@id/numberFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/numberFragment"
+        android:name="com.martinprice20.passwordmakermvi.number.NumberFragment"
+        android:label="NumberFragment" >
+        <action
+            android:id="@+id/action_numberFragment_to_wordFragment"
+            app:destination="@id/wordFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/wordFragment"
+        android:name="com.martinprice20.passwordmakermvi.word.WordFragment"
+        android:label="WordFragment" >
+        <action
+            android:id="@+id/action_wordFragment_to_symbolFragment"
+            app:destination="@id/symbolFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/symbolFragment"
+        android:name="com.martinprice20.passwordmakermvi.symbol.SymbolFragment"
+        android:label="SymbolFragment" >
+        <action
+            android:id="@+id/action_symbolFragment_to_resultFragment"
+            app:destination="@id/resultFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/resultFragment"
+        android:name="com.martinprice20.passwordmakermvi.result.ResultFragment"
+        android:label="ResultFragment" >
+        <action
+            android:id="@+id/action_resultFragment_to_homeFragment"
+            app:destination="@id/homeFragment" />
+    </fragment>
+</navigation>
