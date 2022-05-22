@@ -4,15 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-        <variable
-            name="home_fragment"
-            type="com.martinprice20.passwordmakermvi.home.HomeFragment" />
+
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".home.HomeFragment">
+        tools:context=".views.home.HomeFragment">
 
         <TextView
             android:id="@+id/textView"

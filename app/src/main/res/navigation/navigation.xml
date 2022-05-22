@@ -6,7 +6,7 @@
 
     <fragment
         android:id="@+id/homeFragment"
-        android:name="com.martinprice20.passwordmakermvi.home.HomeFragment"
+        android:name="com.martinprice20.passwordmakermvi.views.home.HomeFragment"
         android:label="@string/app_name">
         <action
             android:id="@+id/action_homeFragment_to_numberFragment"
@@ -16,6 +16,6 @@
     </fragment>
     <fragment
         android:id="@+id/numberFragment"
-        android:name="com.martinprice20.passwordmakermvi.number.NumberFragment"
+        android:name="com.martinprice20.passwordmakermvi.views.number.NumberFragment"
         android:label="Add Some Numbers" />
 </navigation>

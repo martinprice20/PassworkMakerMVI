@@ -1,4 +1,4 @@
-package com.martinprice20.passwordmakermvi.word
+package com.martinprice20.passwordmakermvi.views.word
 
 import android.content.Context
 import android.os.Bundle
@@ -9,7 +9,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import com.martinprice20.passwordmakermvi.PasswordMakerViewModel
 import com.martinprice20.passwordmakermvi.R
-import com.martinprice20.passwordmakermvi.base.BaseFragment
 
 class WordFragment : Fragment() {
 

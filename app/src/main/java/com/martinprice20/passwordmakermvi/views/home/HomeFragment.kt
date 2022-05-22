@@ -1,4 +1,4 @@
-package com.martinprice20.passwordmakermvi.home
+package com.martinprice20.passwordmakermvi.views.home
 
 import android.content.Context
 import android.os.Bundle

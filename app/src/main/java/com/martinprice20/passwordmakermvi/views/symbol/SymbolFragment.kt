@@ -1,4 +1,4 @@
-package com.martinprice20.passwordmakermvi.result
+package com.martinprice20.passwordmakermvi.views.symbol
 
 import android.content.Context
 import android.os.Bundle
@@ -9,9 +9,8 @@ import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import com.martinprice20.passwordmakermvi.PasswordMakerViewModel
 import com.martinprice20.passwordmakermvi.R
-import com.martinprice20.passwordmakermvi.base.BaseFragment
 
-class ResultFragment : Fragment() {
+class SymbolFragment : Fragment() {
 
     val viewModel : PasswordMakerViewModel by activityViewModels()
 
@@ -29,13 +28,13 @@ class ResultFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_result, container, false)
+        return inflater.inflate(R.layout.fragment_symbol, container, false)
     }
 
     companion object {
         @JvmStatic
         fun newInstance(param1: String, param2: String) =
-            ResultFragment().apply {
+            SymbolFragment().apply {
                 arguments = Bundle().apply {
 //                    putString(ARG_PARAM1, param1)
 //                    putString(ARG_PARAM2, param2)
