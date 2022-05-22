@@ -11,7 +11,7 @@ import com.martinprice20.passwordmakermvi.PasswordMakerViewModel
 import com.martinprice20.passwordmakermvi.R
 import com.martinprice20.passwordmakermvi.base.BaseFragment
 
-class ResultFragment : BaseFragment() {
+class ResultFragment : Fragment() {
 
     val viewModel : PasswordMakerViewModel by activityViewModels()
 
@@ -21,7 +21,7 @@ class ResultFragment : BaseFragment() {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        component.inject(this)
+//        component.inject(this)
     }
 
     override fun onCreateView(

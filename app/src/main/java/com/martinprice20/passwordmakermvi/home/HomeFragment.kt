@@ -2,46 +2,39 @@ package com.martinprice20.passwordmakermvi.home
 
 import android.content.Context
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.findNavController
 import com.martinprice20.passwordmakermvi.PasswordMakerViewModel
-import com.martinprice20.passwordmakermvi.PasswordMakerViewModelFactory
 import com.martinprice20.passwordmakermvi.R
-import com.martinprice20.passwordmakermvi.base.BaseFragment
+import com.martinprice20.passwordmakermvi.databinding.FragmentHomeBinding
 
-class HomeFragment : BaseFragment() {
+class HomeFragment : Fragment() {
+
+     private var _binding : FragmentHomeBinding? = null
+    private val binding get() = _binding!!
 
     val viewModel : PasswordMakerViewModel by activityViewModels()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
-
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        component.inject(this)
 
+
+//        component.inject(this)
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_home, container, false)
-    }
-
-    companion object {
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            HomeFragment().apply {
-                arguments = Bundle().apply {
-//                    putString(ARG_PARAM1, param1)
-//                    putString(ARG_PARAM2, param2)
-                }
-            }
-    }
+    ): View {
+       _binding = FragmentHomeBinding.inflate(inflater,container, false)
+        val root: View = binding.root
+        binding.homeStartButton.setOnClickListener { view : View ->
+            view.findNavController().navigate(R.id.action_homeFragment_to_numberFragment)
+        }
+        return root
+     }
 }
