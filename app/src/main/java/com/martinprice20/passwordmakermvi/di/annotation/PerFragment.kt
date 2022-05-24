@@ -1,4 +1,4 @@
-package com.martinprice20.passwordmakermvi.di
+package com.martinprice20.passwordmakermvi.di.annotation
 
 import javax.inject.Scope
 

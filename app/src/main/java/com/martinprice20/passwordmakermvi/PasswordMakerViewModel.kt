@@ -1,16 +1,26 @@
 package com.martinprice20.passwordmakermvi
 
+import android.content.res.Resources
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.martinprice20.passwordmakermvi.model.Action
+import com.martinprice20.passwordmakermvi.model.NumberAction
 import com.martinprice20.passwordmakermvi.model.PwNumber
+import com.martinprice20.passwordmakermvi.repository.PasswordRepository
 import com.martinprice20.passwordmakermvi.utils.RandomInputUtil
 import com.martinprice20.passwordmakermvi.utils.ResourceProvider
 import com.martinprice20.passwordmakermvi.views.number.NumberState
+import javax.inject.Inject
 
-class PasswordMakerViewModel(): ViewModel() {
-    constructor(utils: ResourceProvider) : this()
+const val MIN_NUM = 0
+const val MAX_NUM = 99
+const val DEC = "decrement"
+const val INC = "increment"
+
+class PasswordMakerViewModel @Inject constructor(
+    val resources: ResourceProvider,
+    val repository: PasswordRepository): ViewModel() {
 
     val _numState :MutableLiveData<NumberState> = MutableLiveData()
     val numState : LiveData<NumberState>
@@ -18,51 +28,47 @@ class PasswordMakerViewModel(): ViewModel() {
 
     init {
         _numState.value = NumberState(PwNumber(), PwNumber(), PwNumber())
+
     }
 
     fun reduceNumberState(action: Action) {
         when (action) {
-            action -> println("some action taken")
-            Action.NumOneRand()
-                -> _numState.value =
-                    numState.value!!.copy(num1 = PwNumber(RandomInputUtil.getRandomNumber()))
-            Action.NumOneInc()
+            NumberAction.NumOneRand
+                -> _numState.value = numState.value!!.copy(num1 = PwNumber(RandomInputUtil.getRandomNumber()))
+            NumberAction.NumOneInc
                 -> _numState.value = numState.value!!
-                    .copy(
-                        num1 = PwNumber(numState.value!!.num1.num.inc())
-                    )
-            Action.NumOneDec()
+                    .copy(num1 = numberSetter(numState.value!!.num1, INC))
+            NumberAction.NumOneDec
                 -> _numState.value = numState.value!!
-                    .copy(
-                        num1 = PwNumber(numState.value!!.num1.num.dec())
-                    )
-            Action.NumTwoRand()
-                -> _numState.value =
-                    numState.value!!.copy(num2 = PwNumber(RandomInputUtil.getRandomNumber()))
-            Action.NumTwoInc()
+                    .copy(num1 = numberSetter(numState.value!!.num1, DEC))
+            NumberAction.NumTwoRand
+                -> _numState.value = numState.value!!.copy(num2 = PwNumber(RandomInputUtil.getRandomNumber()))
+            NumberAction.NumTwoInc
                 -> _numState.value = numState.value!!
-                    .copy(
-                        num2 = PwNumber(numState.value!!.num2.num.inc())
-                    )
-            Action.NumTwoDec()
-                -> _numState.value = numState.value!!
-                    .copy(
-                        num2 = PwNumber(numState.value!!.num2.num.dec())
-                    )
-            Action.NumThreeRand()
+                    .copy(num2 = numberSetter(numState.value!!.num2, INC))
+            NumberAction.NumTwoDec
+                -> _numState.value = _numState.value!!
+                    .copy(num2 = numberSetter(numState.value!!.num2, DEC))
+            NumberAction.NumThreeRand
                 -> _numState.value =
                     numState.value!!.copy(num3 = PwNumber(RandomInputUtil.getRandomNumber()))
-            Action.NumThreeInc()
+            NumberAction.NumThreeInc
                 -> _numState.value = numState.value!!
-                    .copy(
-                        num3 = PwNumber(numState.value!!.num3.num.inc())
-                    )
-            Action.NumThreeDec()
+                    .copy(num3 =numberSetter(numState.value!!.num3, INC))
+            NumberAction.NumThreeDec
                 -> _numState.value = numState.value!!
-                    .copy(
-                        num3 = PwNumber(numState.value!!.num3.num.dec())
-                    )
-            else -> throw IllegalArgumentException("this action could not be found")
+                    .copy(num3 = numberSetter(numState.value!!.num3, DEC))
+            NumberAction.ResetNums
+                -> _numState.value = NumberState(PwNumber(), PwNumber(), PwNumber())
         }
+    }
+
+    fun numberSetter(pwNum: PwNumber, mode: String) : PwNumber {
+        return when(mode) {
+            DEC -> PwNumber(if (pwNum.num <= MIN_NUM) MIN_NUM else pwNum.num.dec())
+            else -> PwNumber(if (pwNum.num >= MAX_NUM) MAX_NUM else pwNum.num.inc())
+        }
+
+
     }
 }

@@ -1,25 +1,19 @@
 package com.martinprice20.passwordmakermvi
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
+import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupActionBarWithNavController
 import com.martinprice20.passwordmakermvi.databinding.ActivityMainBinding
-import com.martinprice20.passwordmakermvi.di.ActivityComponent
-import com.martinprice20.passwordmakermvi.di.DaggerActivityComponent
-import com.martinprice20.passwordmakermvi.utils.ResourceProvider
-import javax.inject.Inject
+import com.martinprice20.passwordmakermvi.di.component.ActivityComponent
 
 class MainActivity : AppCompatActivity() {
 
-    @Inject
-    lateinit var mResourceProvider: ResourceProvider
 
     private lateinit var navController: NavController
     private lateinit var binding: ActivityMainBinding
+    lateinit var activityComponent: ActivityComponent
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,11 +27,10 @@ class MainActivity : AppCompatActivity() {
 
         setupActionBarWithNavController(navController)
 
-        val component : ActivityComponent = DaggerActivityComponent.builder()
-            .appComponent((application as PMmviApp).component)
-            .build()
+        activityComponent = (applicationContext as PMmviApp)
+            .component.activityComponent().create()
 
-        component.inject(this)
+        activityComponent.inject(this)
     }
 
     override fun onSupportNavigateUp(): Boolean {

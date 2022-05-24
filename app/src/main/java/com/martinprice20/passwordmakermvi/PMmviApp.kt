@@ -1,8 +1,8 @@
 package com.martinprice20.passwordmakermvi
 
 import android.app.Application
-import com.martinprice20.passwordmakermvi.di.AppComponent
-import com.martinprice20.passwordmakermvi.di.DaggerAppComponent
+import com.martinprice20.passwordmakermvi.di.component.AppComponent
+import com.martinprice20.passwordmakermvi.di.component.DaggerAppComponent
 
 class PMmviApp: Application() {
 

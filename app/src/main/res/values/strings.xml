@@ -13,4 +13,5 @@
     <string name="enter_a_third_number">enter a third number</string>
     <string name="enter_second_number">enter a second number</string>
     <string name="placeholder_text">placeholder text</string>
+    <string name="reset">Reset</string>
 </resources>

@@ -32,26 +32,19 @@
             app:layout_constraintTop_toBottomOf="@+id/numbers_fragment_intro_text"
             app:layout_constraintVertical_chainStyle="spread">
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/num_one_edit_text"
-                android:layout_width="match_parent"
+            <TextView
+                android:id="@+id/num_one_text"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/standard_vertical_margin"
+                android:layout_marginBottom="@dimen/standard_vertical_margin"
+                android:textAlignment="center"
+                android:textSize="34sp"
+                tools:text="34"
                 app:layout_constraintBottom_toTopOf="@+id/num_one_random_button"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <TextView
-                    android:id="@+id/num_one_text"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginBottom="16dp"
-                    android:ems="10"
-                    android:inputType="number"
-                    android:minHeight="48dp"
-                    android:hint="@string/enter_a_number" />
-            </com.google.android.material.textfield.TextInputLayout>
+                app:layout_constraintTop_toTopOf="parent" />
 
             <Button
                 android:id="@+id/num_one_random_button"
@@ -94,26 +87,20 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/num_one_container">
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/num_two_edit_text"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:layout_constraintBottom_toTopOf="@+id/num_two_random_button"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <EditText
-                    android:id="@+id/two_text"
+                <TextView
+                    android:id="@+id/num_two_edit_text"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginBottom="16dp"
-                    android:ems="10"
-                    android:inputType="number"
-                    android:minHeight="48dp"
-                    android:hint="@string/enter_second_number" />
-            </com.google.android.material.textfield.TextInputLayout>
+                    android:layout_marginTop="@dimen/standard_vertical_margin"
+                    android:layout_marginBottom="@dimen/standard_vertical_margin"
+                    android:textAlignment="center"
+                    android:textSize="34sp"
+                    tools:text="21"
+                    app:layout_constraintBottom_toTopOf="@+id/num_two_random_button"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"/>
+
 
             <Button
                 android:id="@+id/num_two_random_button"
@@ -151,33 +138,24 @@
             android:id="@+id/num_three_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintBottom_toTopOf="@+id/go_to_words_button"
+            app:layout_constraintBottom_toTopOf="@+id/num_reset_button"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/num_two_container">
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/num_three_edit_text"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:layout_constraintBottom_toTopOf="@+id/num_three_random_button"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                android:labelFor="@id/three_text">
-
-                <EditText
-                    android:id="@+id/three_text"
+                <TextView
+                    android:id="@+id/num_three_edit_text"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginBottom="16dp"
-                    android:autofillHints="@string/enter_a_third_number"
-                    android:ems="10"
-                    android:hint="@string/enter_a_third_number"
-                    android:inputType="textPersonName" />
-
-            </com.google.android.material.textfield.TextInputLayout>
+                    android:layout_marginTop="@dimen/standard_vertical_margin"
+                    android:layout_marginBottom="@dimen/standard_vertical_margin"
+                    android:textAlignment="center"
+                    android:textSize="34sp"
+                    tools:text="5"
+                    app:layout_constraintBottom_toTopOf="@+id/num_three_random_button"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"/>
 
             <Button
                 android:id="@+id/num_three_random_button"
@@ -215,8 +193,21 @@
             android:id="@+id/go_to_words_button"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/button_outer_margin"
+            android:layout_marginEnd="@dimen/button_outer_margin"
             android:text="@string/now_add_some_words"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <Button
+            android:id="@+id/num_reset_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/button_outer_margin"
+            android:layout_marginEnd="@dimen/button_outer_margin"
+            android:text="@string/reset"
+            app:layout_constraintBottom_toTopOf="@+id/go_to_words_button"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 

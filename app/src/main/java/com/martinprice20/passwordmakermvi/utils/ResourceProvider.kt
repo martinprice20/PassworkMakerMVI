@@ -4,5 +4,5 @@ import android.content.res.Resources
 import com.martinprice20.passwordmakermvi.PMmviApp
 
 interface ResourceProvider {
-    fun getResources(app: PMmviApp) : Resources
+    fun getResources() : Resources
 }

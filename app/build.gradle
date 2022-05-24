@@ -44,6 +44,9 @@ dependencies {
         arch_version = "2.1.0"
         nav_version = "2.4.2"
         dagger_version = "2.42"
+        retrofit = "2.9.0"
+        moshi = "1.13.0"
+        legacy = "1.0.0"
     }
 
     implementation 'androidx.core:core-ktx:1.7.0'
@@ -75,4 +78,12 @@ dependencies {
 
     //fragment
     implementation "androidx.fragment:fragment-ktx:1.4.1"
+
+    // Retrofit
+    implementation "com.squareup.retrofit2:retrofit:$retrofit"
+// Retrofit with Moshi Converter
+    implementation "com.squareup.retrofit2:converter-scalars:$retrofit"
+
+    implementation "com.squareup.retrofit2:converter-moshi:$retrofit"
+    implementation "androidx.legacy:legacy-support-v4:$legacy"
 }
