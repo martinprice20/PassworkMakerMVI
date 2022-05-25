@@ -2,43 +2,98 @@ package com.martinprice20.passwordmakermvi.views.word
 
 import android.content.Context
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.Fragment
+import com.martinprice20.passwordmakermvi.MainActivity
 import com.martinprice20.passwordmakermvi.PasswordMakerViewModel
-import com.martinprice20.passwordmakermvi.R
+import com.martinprice20.passwordmakermvi.WordApiState
+import com.martinprice20.passwordmakermvi.databinding.FragmentWordBinding
+import com.martinprice20.passwordmakermvi.model.PwWord
+import com.martinprice20.passwordmakermvi.model.WordAction
+import javax.inject.Inject
 
 class WordFragment : Fragment() {
 
-    val viewModel : PasswordMakerViewModel by activityViewModels()
+    private var _binding: FragmentWordBinding? = null
+    private val binding get() = _binding!!
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
+    @Inject
+    lateinit var viewModel: PasswordMakerViewModel
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-//        component.inject(this)
+        (activity as MainActivity).activityComponent.inject(this)
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_word, container, false)
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?,
+    ): View {
+        _binding = FragmentWordBinding.inflate(inflater, container, false)
+        //bind some views
+        binding.wordOneRandomButton.setOnClickListener { viewModel.reduceWordState(WordAction.WordOneRandom) }
+        binding.wordTwoRandomButton.setOnClickListener { viewModel.reduceWordState(WordAction.WordTwoRandom) }
+        binding.wordThreeRandomButton.setOnClickListener { viewModel.reduceWordState(WordAction.WordThreeRandom) }
+        binding.wordsFragmentResetButton.setOnClickListener { viewModel.reduceWordState(WordAction.ResetWords) }
+        binding.wordsFragmentContinueButton.setOnClickListener { viewModel.reduceWordState(WordAction.SaveWordsAndContinue(getEnteredWords())) }
+        viewModel.wordState.observe(viewLifecycleOwner) {
+            updateView(it)
+            enableSaveAndContinueButton(it)
+        }
+        viewModel.wordApiState.observe(viewLifecycleOwner) {
+            setApiState(it)
+        }
+        return binding.root
     }
 
-    companion object {
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            WordFragment().apply {
-                arguments = Bundle().apply {
-//                    putString(ARG_PARAM1, param1)
-//                    putString(ARG_PARAM2, param2)
-                }
-            }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        viewModel.words
     }
+
+    private fun getEnteredWords(): List<PwWord> {
+        return listOf(
+            PwWord(binding.wordOneText.toString()),
+            PwWord(binding.wordTwoText.toString()),
+            PwWord(binding.wordThreeText.toString())
+        )
+    }
+
+    override fun onDestroy() {
+        viewModel.disposable.dispose()
+        super.onDestroy()
+    }
+
+    private fun setApiState(it: WordApiState?) {
+        when(it) {
+            WordApiState.DONE -> binding.progressBarContainer.visibility = View.GONE
+            WordApiState.LOADING -> binding.progressBarContainer.visibility = View.VISIBLE
+            WordApiState.ERROR -> {
+                binding.progressBarContainer.visibility = View.GONE
+                showErrorDialog()
+            }
+            else -> {}
+        }
+    }
+
+    private fun showErrorDialog() {
+        TODO("Not yet implemented")
+    }
+
+    private fun enableSaveAndContinueButton(it: WordState?) {
+
+
+    }
+
+    private fun updateView(it: WordState?) {
+        binding.wordOneText.setText(it?.wordOne?.word.toString())
+        binding.wordTwoText.setText(it?.wordTwo?.word.toString())
+        binding.wordThreeText.setText(it?.wordThree?.word.toString())
+    }
+
+
+
 }

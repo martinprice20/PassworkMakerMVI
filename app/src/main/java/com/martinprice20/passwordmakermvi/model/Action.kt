@@ -15,3 +15,11 @@ sealed class NumberAction : Action() {
     object ResetNums: NumberAction()
 
 }
+
+sealed class WordAction : Action() {
+    object WordOneRandom: WordAction()
+    object WordTwoRandom: WordAction()
+    object WordThreeRandom: WordAction()
+    data class SaveWordsAndContinue(val wordlist: List<PwWord>): WordAction()
+    object ResetWords: WordAction()
+}

@@ -17,5 +17,15 @@
     <fragment
         android:id="@+id/numberFragment"
         android:name="com.martinprice20.passwordmakermvi.views.number.NumberFragment"
-        android:label="Add Some Numbers" />
+        android:label="Add Some Numbers" >
+        <action
+            android:id="@+id/action_numberFragment_to_wordFragment"
+            app:destination="@id/wordFragment"
+            app:enterAnim="@android:anim/slide_in_left"
+            app:exitAnim="@android:anim/slide_out_right" />
+    </fragment>
+    <fragment
+        android:id="@+id/wordFragment"
+        android:name="com.martinprice20.passwordmakermvi.views.word.WordFragment"
+        android:label="WordFragment" />
 </navigation>

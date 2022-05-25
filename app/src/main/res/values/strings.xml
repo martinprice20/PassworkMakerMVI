@@ -14,4 +14,8 @@
     <string name="enter_second_number">enter a second number</string>
     <string name="placeholder_text">placeholder text</string>
     <string name="reset">Reset</string>
+    <string name="intro_text_placeholder">Some introductory text. Blah blah blah.</string>
+    <string name="get_random_word">get random word</string>
+    <string name="word_text_hint">Enter a word, or click below to generate one</string>
+    <string name="save_and_continue">Save &amp; Continue</string>
 </resources>

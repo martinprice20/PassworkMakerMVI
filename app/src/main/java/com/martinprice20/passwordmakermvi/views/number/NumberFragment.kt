@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.navigation.findNavController
 import com.martinprice20.passwordmakermvi.MainActivity
 import com.martinprice20.passwordmakermvi.PasswordMakerViewModel
 import com.martinprice20.passwordmakermvi.R
@@ -18,13 +19,8 @@ class NumberFragment : Fragment() {
 
     private var _binding : FragmentNumberBinding? = null
     private val binding get() = _binding!!
-    lateinit var fragmentComponent: FragmentComponent
 
     @Inject lateinit var viewModel : PasswordMakerViewModel
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-}
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -47,6 +43,7 @@ class NumberFragment : Fragment() {
         binding.numThreeRandomButton.setOnClickListener { viewModel.reduceNumberState(NumberAction.NumThreeRand) }
         binding.numThreeDecButton.setOnClickListener { viewModel.reduceNumberState(NumberAction.NumThreeDec) }
         binding.numResetButton.setOnClickListener { viewModel.reduceNumberState(NumberAction.ResetNums) }
+        binding.goToWordsButton.setOnClickListener { navigateToWordsFragment() }
         viewModel.numState.observe(viewLifecycleOwner) {
             updateView(it)
             enableAddWordsButton(it)
@@ -54,10 +51,13 @@ class NumberFragment : Fragment() {
         return root
     }
 
+    private fun navigateToWordsFragment() {
+        view?.findNavController()?.navigate(R.id.action_numberFragment_to_wordFragment)
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         println(viewModel.resources.getResources().getString(R.string.hello_blank_fragment))
-        println(viewModel.repository.getWords(10))
     }
 
 
