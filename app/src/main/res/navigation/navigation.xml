@@ -27,5 +27,25 @@
     <fragment
         android:id="@+id/wordFragment"
         android:name="com.martinprice20.passwordmakermvi.views.word.WordFragment"
-        android:label="WordFragment" />
+        android:label="@string/now_add_some_words">
+        <action
+            android:id="@+id/action_wordFragment_to_symbolFragment"
+            app:destination="@id/symbolFragment"
+            app:enterAnim="@android:anim/slide_in_left"
+            app:exitAnim="@android:anim/slide_out_right" />
+    </fragment>
+    <fragment
+        android:id="@+id/symbolFragment"
+        android:name="com.martinprice20.passwordmakermvi.views.symbol.SymbolFragment"
+        android:label="@string/add_some_symbols">
+        <action
+            android:id="@+id/action_symbolFragment_to_resultFragment"
+            app:destination="@id/resultFragment"
+            app:enterAnim="@android:anim/slide_in_left"
+            app:exitAnim="@android:anim/slide_out_right" />
+    </fragment>
+    <fragment
+        android:id="@+id/resultFragment"
+        android:name="com.martinprice20.passwordmakermvi.views.result.ResultFragment"
+        android:label="ResultFragment" />
 </navigation>

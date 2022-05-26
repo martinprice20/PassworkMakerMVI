@@ -2,43 +2,54 @@ package com.martinprice20.passwordmakermvi.views.symbol
 
 import android.content.Context
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.Fragment
+import com.martinprice20.passwordmakermvi.MainActivity
 import com.martinprice20.passwordmakermvi.PasswordMakerViewModel
-import com.martinprice20.passwordmakermvi.R
+import com.martinprice20.passwordmakermvi.databinding.FragmentSymbolBinding
+import com.martinprice20.passwordmakermvi.model.SymbolAction
+import javax.inject.Inject
 
 class SymbolFragment : Fragment() {
 
-    val viewModel : PasswordMakerViewModel by activityViewModels()
+    private var _binding: FragmentSymbolBinding? = null
+    private val binding get() = _binding!!
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
+    @Inject
+    lateinit var viewModel: PasswordMakerViewModel
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-//        component.inject(this)
+        super.onAttach(context)
+        (activity as MainActivity).activityComponent.inject(this)
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_symbol, container, false)
+    ): View {
+       _binding = FragmentSymbolBinding.inflate(layoutInflater,container,false)
+        binding.apply {
+            binding.getRandomSymbolButton.setOnClickListener {
+                viewModel.reduceSymbolState(SymbolAction.getNewSymbols)
+            }
+        }
+        viewModel.fiveSymbols.observe(viewLifecycleOwner) {
+            updateView(it)
+        }
+        return binding.root
     }
 
-    companion object {
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            SymbolFragment().apply {
-                arguments = Bundle().apply {
-//                    putString(ARG_PARAM1, param1)
-//                    putString(ARG_PARAM2, param2)
-                }
-            }
+    private fun updateView(it: MutableList<String>) {
+        binding.radioButton.text = it[0]
+        binding.radioButton2.text = it[1]
+        binding.radioButton3.text = it[2]
+        binding.radioButton4.text = it[3]
+        binding.radioButton5.text = it[4]
+
     }
+
+
 }

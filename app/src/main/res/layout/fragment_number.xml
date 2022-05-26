@@ -195,7 +195,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/button_outer_margin"
             android:layout_marginEnd="@dimen/button_outer_margin"
-            android:text="@string/now_add_some_words"
+            android:text="@string/save_and_continue"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />

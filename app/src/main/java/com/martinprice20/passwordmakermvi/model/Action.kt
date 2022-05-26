@@ -23,3 +23,7 @@ sealed class WordAction : Action() {
     data class SaveWordsAndContinue(val wordlist: List<PwWord>): WordAction()
     object ResetWords: WordAction()
 }
+
+sealed class SymbolAction : Action() {
+    object getNewSymbols: SymbolAction()
+}

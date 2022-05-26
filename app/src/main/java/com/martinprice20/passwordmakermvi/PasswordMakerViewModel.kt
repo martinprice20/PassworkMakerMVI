@@ -1,22 +1,21 @@
 package com.martinprice20.passwordmakermvi
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.martinprice20.passwordmakermvi.model.Action
-import com.martinprice20.passwordmakermvi.model.NumberAction
-import com.martinprice20.passwordmakermvi.model.PwNumber
-import com.martinprice20.passwordmakermvi.model.PwWord
+import com.martinprice20.passwordmakermvi.model.*
 import com.martinprice20.passwordmakermvi.model.WordAction.*
 import com.martinprice20.passwordmakermvi.repository.PasswordRepository
-import com.martinprice20.passwordmakermvi.utils.RandomInputUtil
-import com.martinprice20.passwordmakermvi.utils.ResourceProvider
+import com.martinprice20.passwordmakermvi.utils.ResourceAndUtilsProvider
 import com.martinprice20.passwordmakermvi.views.number.NumberState
+import com.martinprice20.passwordmakermvi.views.symbol.SymbolState
 import com.martinprice20.passwordmakermvi.views.word.WordState
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.schedulers.Schedulers
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
+import kotlin.random.Random
 
 const val MIN_NUM = 0
 const val MAX_NUM = 99
@@ -25,8 +24,8 @@ const val INC = "increment"
 enum class WordApiState {LOADING, ERROR, DONE}
 
 class PasswordMakerViewModel @Inject constructor(
-    val resources: ResourceProvider,
-    val repository: PasswordRepository
+    val resources: ResourceAndUtilsProvider,
+    private val repository: PasswordRepository
     ): ViewModel() {
 
     val disposable: CompositeDisposable = CompositeDisposable()
@@ -43,20 +42,31 @@ class PasswordMakerViewModel @Inject constructor(
     val wordApiState: LiveData<WordApiState>
         get() = _wordApiState
 
-    val words :  MutableList<PwWord> = mutableListOf(PwWord("Alpha"), PwWord("Bravo"), PwWord("Charlie"))
-    val savedWords : MutableList<PwWord> = mutableListOf()
+    private val _symbolState : MutableLiveData<SymbolState> = MutableLiveData()
+    val symbolState : LiveData<SymbolState>
+        get() = _symbolState
+
+    val randomWords :  MutableList<PwWord> = mutableListOf()
+    private val savedWords : MutableList<PwWord> = mutableListOf()
+    private var allSymbols: List<String>
+    lateinit var fiveSymbols : MutableLiveData<MutableList<String>>
+
 
     init {
         _numState.value = NumberState(PwNumber(), PwNumber(), PwNumber())
         resetWordState()
         _wordApiState.value = WordApiState.DONE
-        setWords()
+        setRandomWords()
+        allSymbols = resources.getSymbolsList()
+        setFiveSymbols()
     }
+
+    /* Numbers Fragment Area */
 
     fun reduceNumberState(action: Action) {
         when (action) {
             NumberAction.NumOneRand
-                -> _numState.value = numState.value!!.copy(num1 = PwNumber(RandomInputUtil.getRandomNumber()))
+                -> _numState.value = numState.value!!.copy(num1 = PwNumber(resources.getRandomNum0To99()))
             NumberAction.NumOneInc
                 -> _numState.value = numState.value!!
                     .copy(num1 = numberSetter(numState.value!!.num1, INC))
@@ -64,7 +74,7 @@ class PasswordMakerViewModel @Inject constructor(
                 -> _numState.value = numState.value!!
                     .copy(num1 = numberSetter(numState.value!!.num1, DEC))
             NumberAction.NumTwoRand
-                -> _numState.value = numState.value!!.copy(num2 = PwNumber(RandomInputUtil.getRandomNumber()))
+                -> _numState.value = numState.value!!.copy(num2 = PwNumber(resources.getRandomNum0To99()))
             NumberAction.NumTwoInc
                 -> _numState.value = numState.value!!
                     .copy(num2 = numberSetter(numState.value!!.num2, INC))
@@ -73,7 +83,7 @@ class PasswordMakerViewModel @Inject constructor(
                     .copy(num2 = numberSetter(numState.value!!.num2, DEC))
             NumberAction.NumThreeRand
                 -> _numState.value =
-                    numState.value!!.copy(num3 = PwNumber(RandomInputUtil.getRandomNumber()))
+                    numState.value!!.copy(num3 = PwNumber(resources.getRandomNum0To99()))
             NumberAction.NumThreeInc
                 -> _numState.value = numState.value!!
                     .copy(num3 =numberSetter(numState.value!!.num3, INC))
@@ -93,16 +103,18 @@ class PasswordMakerViewModel @Inject constructor(
         }
     }
 
+    /* Words Fragment Area */
+
     fun reduceWordState(action: Action) {
         when(action) {
             is WordOneRandom -> {
-                _wordState.value = wordState.value!!.copy(wordOne = words[0])
+                _wordState.value = wordState.value!!.copy(wordOne = randomWords[Random.nextInt(randomWords.size)])
             }
             is WordTwoRandom -> {
-                _wordState.value = wordState.value!!.copy(wordTwo = words[1])
+                _wordState.value = wordState.value!!.copy(wordTwo = randomWords[Random.nextInt(randomWords.size)])
             }
             is WordThreeRandom -> {
-              _wordState.value = wordState.value!!.copy(wordThree = words[2])
+              _wordState.value = wordState.value!!.copy(wordThree = randomWords[Random.nextInt(randomWords.size)])
             }
             is ResetWords -> { resetWordState() }
             is SaveWordsAndContinue -> { saveWords(action.wordlist)}
@@ -119,23 +131,52 @@ class PasswordMakerViewModel @Inject constructor(
         savedWords.addAll(wordList)
     }
 
-    private fun setWords() {
+    private fun setRandomWords() {
         disposable.add(
-
-            repository.getWords(3, 5)
+            repository.getWords(50, 5)
                 .subscribeOn(Schedulers.io())
-                .doOnSubscribe { _wordApiState.value = WordApiState.LOADING }
+                    //add some artificial delay to show the loading spinner
+//                .delay(1000, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
+                .doOnSubscribe { _wordApiState.postValue(WordApiState.LOADING) }
+//                .doOnTerminate{ _wordApiState.value = WordApiState.DONE }
+//                .doOnError { _wordApiState.value = WordApiState.ERROR }
                 .subscribe (
                     {
-                        words.clear()
+                        randomWords.clear()
                         for (word in it) {
-                            words.add(PwWord(word))
+                            randomWords.add(PwWord(word))
                         }
                         _wordApiState.postValue(WordApiState.DONE)
                     },
-                    { _wordApiState.postValue(WordApiState.ERROR) }
+                    { e -> throw Throwable("Some network error occurred") }
                 )
         )
+    }
+
+    /* Symbols Fragment Area */
+
+    private fun setFiveSymbols() {
+        fiveSymbols = MutableLiveData(mutableListOf())
+
+        val list = mutableListOf<String>()
+        list.clear()
+        list.addAll(allSymbols)
+        repeat(5) {
+            list.shuffled()
+            val symbol = list[Random.nextInt(list.size)]
+            fiveSymbols.value?.add(symbol)
+            list.remove(symbol)
+        }
+    }
+
+    fun reduceSymbolState(action: Action) {
+        when(action) {
+            is SymbolAction.getNewSymbols -> {
+                setFiveSymbols()
+
+            }
+            else -> {}
+        }
 
     }
 }

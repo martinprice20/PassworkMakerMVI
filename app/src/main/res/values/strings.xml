@@ -18,4 +18,39 @@
     <string name="get_random_word">get random word</string>
     <string name="word_text_hint">Enter a word, or click below to generate one</string>
     <string name="save_and_continue">Save &amp; Continue</string>
+    <string name="network_error_msg">Some network error occurred</string>
+    <string name="add_some_symbols">Add some symbols</string>
+    <string-array name="symbols_array">
+        <item>\?</item>
+        <item>\!</item>
+        <item>\?"</item>
+        <item>\#</item>
+        <item>\$</item>
+        <item>\%</item>
+        <item>&amp;</item>
+        <item>\'</item>
+        <item>\(</item>
+        <item>\)</item>
+        <item>\*</item>
+        <item>\?+</item>
+        <item>\,</item>
+        <item>\-</item>
+        <item>\.</item>
+        <item>\/</item>
+        <item>\:</item>
+        <item>\;</item>
+        <item>&gt;</item>
+        <item>&lt;</item>
+        <item>\@</item>
+        <item>\[</item>
+        <item>\]</item>
+        <item>\^</item>
+        <item>\_</item>
+        <item>\`</item>
+        <item>\{</item>
+        <item>\}</item>
+        <item>\|</item>
+        <item>\~</item>
+
+    </string-array>
 </resources>

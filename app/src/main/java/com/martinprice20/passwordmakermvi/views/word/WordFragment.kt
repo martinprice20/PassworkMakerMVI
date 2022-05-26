@@ -6,8 +6,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.navigation.findNavController
 import com.martinprice20.passwordmakermvi.MainActivity
 import com.martinprice20.passwordmakermvi.PasswordMakerViewModel
+import com.martinprice20.passwordmakermvi.R
 import com.martinprice20.passwordmakermvi.WordApiState
 import com.martinprice20.passwordmakermvi.databinding.FragmentWordBinding
 import com.martinprice20.passwordmakermvi.model.PwWord
@@ -34,14 +36,25 @@ class WordFragment : Fragment() {
     ): View {
         _binding = FragmentWordBinding.inflate(inflater, container, false)
         //bind some views
-        binding.wordOneRandomButton.setOnClickListener { viewModel.reduceWordState(WordAction.WordOneRandom) }
-        binding.wordTwoRandomButton.setOnClickListener { viewModel.reduceWordState(WordAction.WordTwoRandom) }
-        binding.wordThreeRandomButton.setOnClickListener { viewModel.reduceWordState(WordAction.WordThreeRandom) }
-        binding.wordsFragmentResetButton.setOnClickListener { viewModel.reduceWordState(WordAction.ResetWords) }
-        binding.wordsFragmentContinueButton.setOnClickListener { viewModel.reduceWordState(WordAction.SaveWordsAndContinue(getEnteredWords())) }
+        binding.apply {
+            wordOneRandomButton.setOnClickListener { viewModel.reduceWordState(WordAction.WordOneRandom) }
+            wordTwoRandomButton.setOnClickListener { viewModel.reduceWordState(WordAction.WordTwoRandom) }
+            wordThreeRandomButton.setOnClickListener { viewModel.reduceWordState(WordAction.WordThreeRandom) }
+            wordsFragmentResetButton.setOnClickListener {
+                viewModel.reduceWordState(
+                    WordAction.ResetWords
+                )
+            }
+            wordsFragmentContinueButton.setOnClickListener {
+                viewModel.reduceWordState(
+                    WordAction.SaveWordsAndContinue(getEnteredWords())
+                )
+                it.findNavController().navigate(R.id.action_wordFragment_to_symbolFragment)
+            }
+        }
         viewModel.wordState.observe(viewLifecycleOwner) {
             updateView(it)
-            enableSaveAndContinueButton(it)
+            enableSaveAndContinueButton()
         }
         viewModel.wordApiState.observe(viewLifecycleOwner) {
             setApiState(it)
@@ -51,7 +64,7 @@ class WordFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.words
+        viewModel.randomWords
     }
 
     private fun getEnteredWords(): List<PwWord> {
@@ -83,15 +96,20 @@ class WordFragment : Fragment() {
         TODO("Not yet implemented")
     }
 
-    private fun enableSaveAndContinueButton(it: WordState?) {
-
-
+    private fun enableSaveAndContinueButton() {
+        binding.wordsFragmentContinueButton.isEnabled =
+            !binding.wordOneText.text.isNullOrBlank() &&
+                    !binding.wordTwoText.text.isNullOrBlank() &&
+                    !binding.wordThreeText.text.isNullOrBlank()
     }
 
     private fun updateView(it: WordState?) {
-        binding.wordOneText.setText(it?.wordOne?.word.toString())
-        binding.wordTwoText.setText(it?.wordTwo?.word.toString())
-        binding.wordThreeText.setText(it?.wordThree?.word.toString())
+        it!!.wordOne.word?.let { binding.wordOneText.setText(it.toString().replaceFirstChar { letter -> letter.uppercase() }) } ?: run {
+            binding.wordOneText.text?.clear() }
+        it.wordTwo.word?.let { binding.wordTwoText.setText(it.toString().replaceFirstChar { letter -> letter.uppercase() }) } ?: run {
+            binding.wordTwoText.text?.clear() }
+        it.wordThree.word?.let { binding.wordThreeText.setText(it.toString().replaceFirstChar { letter -> letter.uppercase() }) } ?: run {
+            binding.wordThreeText.text?.clear() }
     }
 
 
