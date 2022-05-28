@@ -8,5 +8,5 @@ import retrofit2.http.Query
 interface WordsApiService {
 
     @GET("word")
-    fun getWords(@Query("number") number: Int, @Query("length") length: Int) : Single<List<String>>
+    fun getWords(@Query("number") number: Int, @Query("length") length: Int) : Single<Array<String>>
 }

@@ -11,8 +11,10 @@ import com.martinprice20.passwordmakermvi.views.number.NumberState
 import com.martinprice20.passwordmakermvi.views.symbol.SymbolState
 import com.martinprice20.passwordmakermvi.views.word.WordState
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.schedulers.Schedulers
+import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import kotlin.random.Random
@@ -46,19 +48,20 @@ class PasswordMakerViewModel @Inject constructor(
     val symbolState : LiveData<SymbolState>
         get() = _symbolState
 
-    val randomWords :  MutableList<PwWord> = mutableListOf()
-    private val savedWords : MutableList<PwWord> = mutableListOf()
     private var allSymbols: List<String>
     lateinit var fiveSymbols : MutableLiveData<MutableList<String>>
 
 
     init {
         _numState.value = NumberState(PwNumber(), PwNumber(), PwNumber())
-        resetWordState()
         _wordApiState.value = WordApiState.DONE
-        setRandomWords()
         allSymbols = resources.getSymbolsList()
         setFiveSymbols()
+    }
+
+    fun initWordState() {
+        _wordState.value =  WordState(PwWord(), PwWord(), PwWord(), listOf(), listOf())
+        setRandomWords()
     }
 
     /* Numbers Fragment Area */
@@ -108,13 +111,16 @@ class PasswordMakerViewModel @Inject constructor(
     fun reduceWordState(action: Action) {
         when(action) {
             is WordOneRandom -> {
-                _wordState.value = wordState.value!!.copy(wordOne = randomWords[Random.nextInt(randomWords.size)])
+                _wordState.value = wordState.value!!.copy(wordOne = wordState.value!!.randomWordsList[Random.nextInt(
+                    wordState.value!!.randomWordsList.size)])
             }
             is WordTwoRandom -> {
-                _wordState.value = wordState.value!!.copy(wordTwo = randomWords[Random.nextInt(randomWords.size)])
+                _wordState.value = wordState.value!!.copy(wordTwo = wordState.value!!.randomWordsList[Random.nextInt(
+                    wordState.value!!.randomWordsList.size)])
             }
             is WordThreeRandom -> {
-              _wordState.value = wordState.value!!.copy(wordThree = randomWords[Random.nextInt(randomWords.size)])
+              _wordState.value = wordState.value!!.copy(wordThree = wordState.value!!.randomWordsList[Random.nextInt(
+                  wordState.value!!.randomWordsList.size)])
             }
             is ResetWords -> { resetWordState() }
             is SaveWordsAndContinue -> { saveWords(action.wordlist)}
@@ -123,35 +129,36 @@ class PasswordMakerViewModel @Inject constructor(
     }
 
     private fun resetWordState() {
-        _wordState.value = WordState(PwWord(), PwWord(), PwWord())
+        _wordState.value = wordState.value!!.copy(wordOne = PwWord(), wordTwo = PwWord(), wordThree = PwWord())
     }
 
     private fun saveWords(wordList: List<PwWord>) {
-        savedWords.clear()
-        savedWords.addAll(wordList)
+        _wordState.value = wordState.value!!.copy(savedWordsList = wordList)
+
     }
 
     private fun setRandomWords() {
         disposable.add(
             repository.getWords(50, 5)
                 .subscribeOn(Schedulers.io())
-                    //add some artificial delay to show the loading spinner
-//                .delay(1000, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
+                .map { array -> array.toList() }
+                .toObservable()
+                .flatMapIterable { list -> list }
+                .map { item -> PwWord(item) }
+                .toList()
                 .doOnSubscribe { _wordApiState.postValue(WordApiState.LOADING) }
-//                .doOnTerminate{ _wordApiState.value = WordApiState.DONE }
-//                .doOnError { _wordApiState.value = WordApiState.ERROR }
+                .doOnSuccess { _wordApiState.postValue(WordApiState.DONE) }
                 .subscribe (
                     {
-                        randomWords.clear()
-                        for (word in it) {
-                            randomWords.add(PwWord(word))
-                        }
-                        _wordApiState.postValue(WordApiState.DONE)
+                       _wordState.postValue(wordState.value!!.copy(randomWordsList = it))
                     },
-                    { e -> throw Throwable("Some network error occurred") }
+                    {
+                        _wordApiState.postValue(WordApiState.ERROR)
+                    }
                 )
         )
     }
+
 
     /* Symbols Fragment Area */
 

@@ -15,7 +15,7 @@ class PasswordRepository(private val wordsApiService: WordsApiService) {
     var disposable: CompositeDisposable = CompositeDisposable()
 
 
-    fun getWords(number: Int, length: Int) : Single<List<String>> {
+    fun getWords(number: Int, length: Int) : Single<Array<String>> {
        return wordsApiService.getWords(number, length)
     }
 }

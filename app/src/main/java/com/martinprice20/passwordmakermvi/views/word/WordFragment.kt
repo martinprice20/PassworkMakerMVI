@@ -24,6 +24,11 @@ class WordFragment : Fragment() {
     @Inject
     lateinit var viewModel: PasswordMakerViewModel
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        viewModel.initWordState()
+    }
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
         (activity as MainActivity).activityComponent.inject(this)
@@ -60,11 +65,6 @@ class WordFragment : Fragment() {
             setApiState(it)
         }
         return binding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        viewModel.randomWords
     }
 
     private fun getEnteredWords(): List<PwWord> {
