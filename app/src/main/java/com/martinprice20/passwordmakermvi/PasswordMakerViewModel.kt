@@ -14,6 +14,9 @@ import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.schedulers.Schedulers
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -138,25 +141,41 @@ class PasswordMakerViewModel @Inject constructor(
     }
 
     private fun setRandomWords() {
-        disposable.add(
-            repository.getWords(50, 5)
-                .subscribeOn(Schedulers.io())
-                .map { array -> array.toList() }
-                .toObservable()
-                .flatMapIterable { list -> list }
-                .map { item -> PwWord(item) }
-                .toList()
-                .doOnSubscribe { _wordApiState.postValue(WordApiState.LOADING) }
-                .doOnSuccess { _wordApiState.postValue(WordApiState.DONE) }
-                .subscribe (
-                    {
-                       _wordState.postValue(wordState.value!!.copy(randomWordsList = it))
-                    },
-                    {
-                        _wordApiState.postValue(WordApiState.ERROR)
-                    }
-                )
-        )
+//        disposable.add(
+//            repository.getWords(50, 5)
+//                .subscribeOn(Schedulers.io())
+//                .map { array -> array.toList() }
+//                .toObservable()
+//                .flatMapIterable { list -> list }
+//                .map { item -> PwWord(item) }
+//                .toList()
+//                .doOnSubscribe { _wordApiState.postValue(WordApiState.LOADING) }
+//                .doOnSuccess { _wordApiState.postValue(WordApiState.DONE) }
+//                .subscribe (
+//                    {
+//                       _wordState.postValue(wordState.value!!.copy(randomWordsList = it))
+//                    },
+//                    {
+//                        _wordApiState.postValue(WordApiState.ERROR)
+//                    }
+//                )
+//        )
+        _wordApiState.value = WordApiState.LOADING
+        repository.getWords(50, 5).enqueue(object : Callback<Array<String>> {
+
+            override fun onResponse(call: Call<Array<String>>, response: Response<Array<String>>) {
+                val randList = mutableListOf<PwWord>()
+                for (word in response.body()!!) {
+                    randList.add(PwWord(word))
+                }
+                _wordState.postValue(wordState.value!!.copy(randomWordsList = randList))
+                _wordApiState.postValue(WordApiState.DONE)
+            }
+
+            override fun onFailure(call: Call<Array<String>>, t: Throwable) {
+                _wordApiState.postValue(WordApiState.ERROR)
+            }
+        })
     }
 
 
